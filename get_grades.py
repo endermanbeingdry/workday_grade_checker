@@ -10,6 +10,7 @@ from selenium.common.exceptions import ElementClickInterceptedException
 
 JSESSIONID = "REPLACE ME"
 SECONDS_BETWEEN_CHECKS = 10
+DEBUG_PRINTS = False
 grades_url = ""
 
 # Set up Chrome options (optional)
@@ -23,6 +24,10 @@ chrome_options.add_argument("--remote-debugging-port=9222")
 # Initialize the WebDriver
 driver = webdriver.Chrome(options=chrome_options)
 
+def debug_print(msg):
+    if DEBUG_PRINTS:
+        print(msg)
+
 def nav(element_list, name, max_attempts = -1):
     attempts = 0
     while True:
@@ -32,10 +37,10 @@ def nav(element_list, name, max_attempts = -1):
                 curr_element = curr_element.find_element(element[0], element[1])
             time.sleep(0.5)
             curr_element.click()
-            print(f"\033[92mClicked {name}\033[0m")
+            debug_print(f"\033[92mClicked {name}\033[0m")
             return True
         except (NoSuchElementException,ElementClickInterceptedException):
-            print(f"\033[93mCould not find {name}, retrying...\033[0m")
+            debug_print(f"\033[93mCould not find {name}, retrying...\033[0m")
             attempts += 1
             if attempts == max_attempts:
                 return False
@@ -58,15 +63,16 @@ def get_grades_table():
                     raise ValueError("oof")
                 res[entry_data[0]] = entry_data[4]
 
-            print("\033[92mFound grades table\033[0m")
+            debug_print("\033[92mFound grades table\033[0m")
             grades_url = driver.current_url
 
             return res
         except (NoSuchElementException, ValueError): 
-            print("\033[93mCould not find grades table, retrying...\033[0m")
+            debug_print("\033[93mCould not find grades table, retrying...\033[0m")
             time.sleep(0.5)
 
 def get_grades(academic_period="2024-25 Winter Session (UBC-V)", retries_before_JSESSIONID_expiry=10):
+    print("\033[95mGetting grades...\033[0m")
 
     driver.get("https://wd10.myworkday.com/")
 
@@ -122,21 +128,21 @@ while True:
         if new_grades[course] == "":
             continue
         if course not in prev_grades.keys():
-            print(f"\033[92mNew course: {course} with grade {new_grades[course]}\033[0m")
+            print(f"\033[92mNew course grade: {course[:10]}: {new_grades[course]}\033[0m")
             found_new = True
         elif prev_grades[course] == "":
-            print(f"\033[92mNew course grade: {course} with grade {new_grades[course]}\033[0m")
+            print(f"\033[92mNew course grade: {course[:10]}: {new_grades[course]}\033[0m")
             found_new = True
         elif prev_grades[course] != new_grades[course]:
-            print(f"\033[92mCourse grade updated: {course} with grade {new_grades[course]}\033[0m")
+            print(f"\033[92mCourse grade updated: {course[:10]}: {new_grades[course]}\033[0m")
             found_new = True
     prev_grades = new_grades
     if not found_new:
         print("\033[93mNo new grades found this time\033[0m")
-    print("\033[mCurrent grades:")
+    print("\033[94mCurrent grades:")
     for course in prev_grades.keys():
         if len(prev_grades[course]) == 0:
             continue
-        print(f"\033[92m{course[:9]}: {prev_grades[course]}\033[0m")
+        print(f"\033[94m{course[:10]}: {prev_grades[course]}\033[0m")
     print("\n")
     time.sleep(SECONDS_BETWEEN_CHECKS)
