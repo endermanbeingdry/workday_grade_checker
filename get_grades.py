@@ -115,7 +115,7 @@ def get_grades(academic_period="2024-25 Winter Session (UBC-V)", retries_before_
 #     jssid = json.load(f)["JSESSIONID"]
 
 prev_grades = {}
-for i in range(5):
+while True:
     new_grades = get_grades()
     found_new = False
     for course in new_grades.keys():
