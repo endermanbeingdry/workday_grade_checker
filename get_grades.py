@@ -133,4 +133,10 @@ while True:
     prev_grades = new_grades
     if not found_new:
         print("\033[93mNo new grades found this time\033[0m")
+    print("\033[mCurrent grades:")
+    for course in prev_grades.keys():
+        if len(prev_grades[course]) == 0:
+            continue
+        print(f"\033[92m{course[:9]}: {prev_grades[course]}\033[0m")
+    print("\n")
     time.sleep(SECONDS_BETWEEN_CHECKS)
