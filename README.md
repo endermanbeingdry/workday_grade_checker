@@ -2,7 +2,7 @@
 ## Instructions
 1. Download Python: https://www.python.org/
 2. Clone this repository
-3. Open `grades_checker.py`, set `JSESSIONID` to the value of your JSESSIONID cookie on Workday. You can find your cookie by:
+3. Open `grades_checker.py`, set `JSESSIONID` to the value of your JSESSIONID cookie on Workday, and adjust `SECONDS_BETWEEN_CHECKS` to the value you want. You can find your cookie by:
 
     a. Navigating to Workday website in a browser, then log in
   
