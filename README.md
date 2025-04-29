@@ -15,4 +15,4 @@
     e. It should contain a drop-down, where you can select and find your cookies, including JSESSIONID
 5. Navigate into this repository in terminal, then type `python -m venv venv`
 6. Type `"venv/Scripts/python" -m pip install selenium`
-7. Go back to terminal, type `"venv/Scripts/python" get_grades.py`
+7. Type `"venv/Scripts/python" get_grades.py`
